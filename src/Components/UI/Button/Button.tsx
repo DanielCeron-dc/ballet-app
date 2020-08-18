@@ -38,6 +38,7 @@ const Button: React.FC<Props> = (props) => {
 	const onMauseClick = () => {
 		if (props.onCLick) {
 			props.onCLick();
+			setHover(false);
 		}
 	};
 
@@ -45,7 +46,7 @@ const Button: React.FC<Props> = (props) => {
 		<button
 			style={style}
 			disabled={props.disable}
-			onClick={props.onCLick}
+			onClick={onMauseClick}
 			onMouseEnter={() => setHover(true)}
 			onMouseLeave={() => setHover(false)}>
 			{props.children}

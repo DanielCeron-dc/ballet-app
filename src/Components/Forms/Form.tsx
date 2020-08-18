@@ -47,10 +47,17 @@ const Form: React.FC<Props> = (props) => {
 		);
 	}
 
+	const SubmitHanlder = (event: React.FormEvent) => {
+		event.preventDefault();
+		if (valid) {
+			props.submit();
+		}
+	};
+
 	return (
 		<React.Fragment>
 			<h4>{props.title}</h4>
-			<form>{InputElements}</form>
+			<form onSubmit={SubmitHanlder}>{InputElements}</form>
 			<div style={{ marginTop: "20px" }}>
 				{props.button && (
 					<Button disable={!valid} color='#6e6edf' onCLick={props.submit}>

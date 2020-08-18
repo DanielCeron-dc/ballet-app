@@ -2,14 +2,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import axios from "axios";
 
-interface Group {
+export interface Group {
 	name: string;
 	color: string;
 }
 
 //*Thunk
 export const PostGroupThunk = ({ name, color, id }: { name: string; color: string; id: string }) => async (
-	dispatch: (arg0: { payload: { name: string; color: string; id: string }; type: string }) => void
+	dispatch: (action: { payload: { name: string; color: string; id: string }; type: string }) => void
 ) => {
 	try {
 		await axios.post("https://ballet-react-app.firebaseio.com/groups.json", { name, color });
@@ -19,20 +19,25 @@ export const PostGroupThunk = ({ name, color, id }: { name: string; color: strin
 	}
 };
 
-const initialState: Group[] = [
-	{
-		name: "Learn React",
-		color: "arroz",
-	},
-	{
-		name: "Learn React",
-		color: "arroz",
-	},
-	{
-		name: "Learn React",
-		color: "arroz",
-	},
-];
+//*trunk
+export const FetchGroupsFromFirebase = () => async (dispatch: any) => {
+	let fetchedGroups: Group[] = [];
+	dispatch(loadingGroup.actions.switchLoading({ newState: true }));
+	try {
+		let response = await axios.get("https://ballet-react-app.firebaseio.com/groups.json");
+		for (let key in response.data) {
+			fetchedGroups.push({
+				...response.data[key],
+			});
+		}
+		dispatch(GroupSlice.actions.FetchGroups({ groups: fetchedGroups }));
+		dispatch(loadingGroup.actions.switchLoading({ newState: false }));
+	} catch (error) {
+		console.log("hola");
+	}
+};
+
+const initialState: Group[] = [];
 
 const GroupSlice = createSlice({
 	name: "groups",
@@ -41,8 +46,21 @@ const GroupSlice = createSlice({
 		Create: (state, { payload }: PayloadAction<{ name: string; color: string; id: string }>) => {
 			state.push(payload);
 		},
+		FetchGroups: (state, { payload }: PayloadAction<{ groups: Group[] }>) => {
+			return payload.groups;
+		},
+	},
+});
+
+const loadingGroup = createSlice({
+	name: "loadingGroup",
+	initialState: true,
+	reducers: {
+		switchLoading: (state, { payload }: PayloadAction<{ newState: boolean }>) => {
+			return payload.newState;
+		},
 	},
 });
 
 export const { Create: CreateGroupActionCreator } = GroupSlice.actions;
-export const Reducer = { Group: GroupSlice.reducer };
+export const Reducer = { Groups: GroupSlice.reducer, LoadingGroup: loadingGroup.reducer };

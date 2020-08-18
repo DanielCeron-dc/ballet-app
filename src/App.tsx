@@ -31,7 +31,7 @@ const App: React.FC<Props> = () => {
 		<div className='App'>
 			<PrimarySearchAppBar />
 			<Switch>
-				<Suspense fallback={Spinner}>
+				<Suspense fallback={<Spinner />}>
 					<Route path='/home' render={() => <Home />} />
 					<Route path='/add' render={() => <Add />} />
 					<Route path='/students' render={() => <Students />} />
