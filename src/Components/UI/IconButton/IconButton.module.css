@@ -1,0 +1,59 @@
+.btn {
+	background-color: DodgerBlue;
+	border-radius: 30%;
+	border: none;
+	color: white;
+	padding: 2px 7px;
+	font-size: 16px;
+	cursor: pointer;
+	position: relative;
+	outline: none;
+	margin: none;
+}
+
+.copia {
+	border-radius: 30%;
+	border: none;
+
+	padding: none;
+	display: inline-block;
+	position: relative;
+	outline: none;
+	margin-left: 3px;
+}
+.btn:hover {
+	background-color: rgba(80, 82, 88, 0.401);
+}
+
+.btn:hover .tooltiptext {
+	visibility: visible;
+}
+
+.tooltiptext {
+	border: black;
+	position: absolute;
+	display: inline-block;
+	left: 100%;
+	align-items: center;
+}
+
+.btn .tooltiptext {
+	visibility: hidden;
+
+	top: 20px;
+	width: auto;
+	left: 20px;
+	background: -webkit-linear-gradient(left, rgb(125, 147, 235), #c3c7c700);
+	/* background: linear-gradient(to right, rgba(182, 184, 189, 0.129), #bfbebe); */
+	color: rgb(22, 24, 37);
+	text-align: -webkit-center;
+	border-radius: 0% 20% 20% 20%;
+
+	border-color: #6a70e1;
+	padding: 10px 20px 15px 20px;
+	cursor: initial;
+
+	/* Position the tooltip  */
+	position: absolute;
+	z-index: 1;
+}

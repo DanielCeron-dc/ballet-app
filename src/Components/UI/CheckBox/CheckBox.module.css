@@ -1,0 +1,12 @@
+.btn {
+	background-color: rgba(37, 189, 72, 0.231);
+	border-radius: 30%;
+	border: none;
+	color: white;
+	align-items: center;
+
+	cursor: pointer;
+	position: relative;
+	outline: none;
+	margin-left: 3px;
+}
