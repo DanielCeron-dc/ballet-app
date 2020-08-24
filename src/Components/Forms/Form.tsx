@@ -84,6 +84,7 @@ function areEqual(
 			result = false;
 		}
 	}
+	result = result ? prevProps.title === nextProps.title : false;
 
 	return result;
 }
