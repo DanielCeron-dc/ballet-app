@@ -11,6 +11,7 @@ interface Props {
 	validation: Ivalidation;
 	inputChanged: (key: string, value: string, valid: boolean) => void;
 	label?: string;
+	style?: React.CSSProperties;
 }
 
 const Input: React.FC<Props> = (props) => {
@@ -18,6 +19,8 @@ const Input: React.FC<Props> = (props) => {
 	const [touched, settouched] = useState(false);
 	const { inputChanged, validation, id } = props;
 	let classesArray = [classes.InputElement];
+
+	/* console.log("RENDERING CUSTOM INPUT"); */
 
 	if (!valid && touched) {
 		classesArray.push(classes.Invalid);
@@ -63,6 +66,7 @@ const Input: React.FC<Props> = (props) => {
 			InputElement = (
 				<input
 					className={classesArray.join(" ")}
+					style={props.style}
 					placeholder={props.inputConfig.placeholer}
 					type={props.inputConfig.type}
 					value={props.value}
@@ -105,4 +109,11 @@ const Input: React.FC<Props> = (props) => {
 	);
 };
 
-export default Input;
+function areEqual(
+	prevProps: Readonly<React.PropsWithChildren<Props>>,
+	nextProps: Readonly<React.PropsWithChildren<Props>>
+): boolean {
+	return prevProps.value === nextProps.value;
+}
+
+export default React.memo(Input, areEqual);

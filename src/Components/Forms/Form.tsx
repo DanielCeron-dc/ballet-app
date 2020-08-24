@@ -12,7 +12,7 @@ interface Props {
 }
 
 const Form: React.FC<Props> = (props) => {
-	let InputElements = [];
+	let InputElements: React.ReactNodeArray = [];
 
 	const [valid, setvalid] = useState(false);
 	const { form, updateValues } = props;
@@ -32,20 +32,25 @@ const Form: React.FC<Props> = (props) => {
 		setvalid(checkValidity(form));
 	}, [form, checkValidity]);
 
-	for (let key in form) {
-		InputElements.push(
-			<Input
-				key={key}
-				id={key}
-				value={form[key].value}
-				inputType={form[key].elementType}
-				inputConfig={props.form[key].elementConfig}
-				options={form[key].options}
-				inputChanged={updateValues}
-				validation={form[key].validation}
-			/>
-		);
-	}
+	const loadForm = useCallback(() => {
+		for (let key in form) {
+			InputElements.push(
+				<Input
+					key={key}
+					id={key}
+					value={form[key].value}
+					inputType={form[key].elementType}
+					inputConfig={form[key].elementConfig}
+					options={form[key].options}
+					inputChanged={updateValues}
+					validation={form[key].validation}
+					style={form[key].style}
+				/>
+			);
+		}
+	}, [InputElements, form, updateValues]);
+
+	loadForm();
 
 	const SubmitHanlder = (event: React.FormEvent) => {
 		event.preventDefault();
@@ -69,4 +74,18 @@ const Form: React.FC<Props> = (props) => {
 	);
 };
 
-export default Form;
+function areEqual(
+	prevProps: Readonly<React.PropsWithChildren<Props>>,
+	nextProps: Readonly<React.PropsWithChildren<Props>>
+): boolean {
+	let result: boolean = true;
+	for (let key in nextProps.form) {
+		if (prevProps.form[key].value !== nextProps.form[key].value) {
+			result = false;
+		}
+	}
+
+	return result;
+}
+
+export default React.memo(Form, areEqual);

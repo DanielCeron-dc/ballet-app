@@ -7,16 +7,23 @@ interface Props {
 	buttonHoverText?: string;
 	hoverColor?: string;
 	selectedColor?: string;
+	onClick?: () => void;
+	selected?: boolean;
 }
 
 const CheckBox: React.FC<Props> = (props) => {
-	const [clicked, setClicked] = useState(false);
+	const { selected } = props;
 	const [hover, sethover] = useState(false);
 
 	let selectedColor = props.selectedColor ? props.selectedColor : "rgb(37, 189, 72)";
 	let hoverColor = props.hoverColor ? props.hoverColor : "rgba(37, 189, 72, 0.231)";
 
-	let color = clicked ? selectedColor : "rgba(181, 189, 186, 0.292)";
+	let color = selected ? selectedColor : "rgba(181, 189, 186, 0.292)";
+	const onClickFunction = () => {
+		if (props.onClick) {
+			props.onClick();
+		}
+	};
 
 	return (
 		<div
@@ -33,8 +40,8 @@ const CheckBox: React.FC<Props> = (props) => {
 			onMouseLeave={() => sethover(false)}>
 			<button
 				className={classes.btn}
-				style={hover && !clicked ? { background: hoverColor } : { background: color }}
-				onClick={() => setClicked(!clicked)}>
+				style={hover && !selected ? { background: hoverColor } : { background: color }}
+				onClick={() => onClickFunction()}>
 				{props.children}
 			</button>
 			{hover && props.hoverText && (

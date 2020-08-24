@@ -1,11 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
+import IGroup from "../interfaces/Group";
 import axios from "axios";
-
-export interface Group {
-	name: string;
-	color: string;
-}
 
 //*Thunk
 export const PostGroupThunk = ({ name, color, id }: { name: string; color: string; id: string }) => async (
@@ -21,7 +16,7 @@ export const PostGroupThunk = ({ name, color, id }: { name: string; color: strin
 
 //*trunk
 export const FetchGroupsFromFirebase = () => async (dispatch: any) => {
-	let fetchedGroups: Group[] = [];
+	let fetchedGroups: IGroup[] = [];
 	dispatch(loadingGroup.actions.switchLoading({ newState: true }));
 	try {
 		let response = await axios.get("https://ballet-react-app.firebaseio.com/groups.json");
@@ -37,7 +32,7 @@ export const FetchGroupsFromFirebase = () => async (dispatch: any) => {
 	}
 };
 
-const initialState: Group[] = [];
+const initialState: IGroup[] = [];
 
 const GroupSlice = createSlice({
 	name: "groups",
@@ -46,7 +41,7 @@ const GroupSlice = createSlice({
 		Create: (state, { payload }: PayloadAction<{ name: string; color: string; id: string }>) => {
 			state.push(payload);
 		},
-		FetchGroups: (state, { payload }: PayloadAction<{ groups: Group[] }>) => {
+		FetchGroups: (state, { payload }: PayloadAction<{ groups: IGroup[] }>) => {
 			return payload.groups;
 		},
 	},
@@ -63,4 +58,4 @@ const loadingGroup = createSlice({
 });
 
 export const { Create: CreateGroupActionCreator } = GroupSlice.actions;
-export const Reducer = { Groups: GroupSlice.reducer, LoadingGroup: loadingGroup.reducer };
+export const groupReducers = { Groups: GroupSlice.reducer, LoadingGroup: loadingGroup.reducer };

@@ -1,13 +1,9 @@
-import React, { useEffect, useCallback } from "react";
+import React from "react";
 import IconButton from "../UI/IconButton/IconButton";
 import AddIcon from "@material-ui/icons/Add";
 import Button from "../UI/ButtonTypeTwo/ButtonTypeTwo";
 import colors, { Icolors } from "../../tools/colors";
-
-export interface Group {
-	name: string;
-	color: string;
-}
+import Group from "../../interfaces/Group";
 
 interface Props {
 	groups: Group[];
@@ -17,6 +13,7 @@ interface Props {
 }
 
 const GroupsNav: React.FC<Props> = (props) => {
+	console.log("Rendering Groups Nav" + props.groups);
 	let selected: boolean = false;
 	let Groups: React.ReactNode;
 
@@ -46,4 +43,13 @@ const GroupsNav: React.FC<Props> = (props) => {
 	);
 };
 
-export default React.memo(GroupsNav);
+function areEqual(
+	prevProps: Readonly<React.PropsWithChildren<Props>>,
+	nextProps: Readonly<React.PropsWithChildren<Props>>
+): boolean {
+	return (
+		prevProps.groups.length === nextProps.groups.length && prevProps.selectedGroupName === nextProps.selectedGroupName
+	);
+}
+
+export default React.memo(GroupsNav, areEqual);

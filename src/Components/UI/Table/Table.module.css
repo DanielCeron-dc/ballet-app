@@ -54,7 +54,7 @@ table tr:last-child td:last-child {
 	border-radius: 50%;
 	margin-top: 5px;
 
-	background: linear-gradient(to right, #ffffff, #a5a5ac00);
+	background: linear-gradient(to right, #ffffff, #36368a);
 	border-bottom: solid 5px black;
 }
 

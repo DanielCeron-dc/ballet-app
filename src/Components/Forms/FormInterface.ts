@@ -1,7 +1,10 @@
+import React from "react";
+
 export default interface IForm {
 	elementType: string;
 	elementConfig: IelementConfig;
 	options: IOption[];
+	style?: React.CSSProperties;
 	value: string;
 	validation: Ivalidation;
 	valid: boolean;
@@ -15,9 +18,6 @@ export interface Ivalidation {
 	minLenght?: number;
 }
 
-export interface IelementConfigSelect {
-	options: IOption[]; //!probablemente esta no sirve pa nada
-}
 export interface IOption {
 	value: string;
 	displayValue: string;
