@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
 
+//* redux
 import { FetchGroupsFromFirebase } from "../../store/Group.slice";
 import { useTypedSelector } from "../../store";
 import { useDispatch } from "react-redux";
 import { FetchStudentsThunk, ChangeCheckBoxPendienteThunk } from "../../store/StudentsSlice";
 
+//* Components
 import Modal from "../../Components/UI/Modal/Modal";
 import StudentsTable from "../../Components/StudentsTable/studentsTable";
 import IconButton from "../../Components/UI/IconButton/IconButton";
@@ -50,16 +52,16 @@ const Students: React.FC<Props> = () => {
 		}
 	}, [selectedGroup, dispatch]);
 
-	let openMonthlyPament = (prmMonth: ISelectedMonth) => {
+	let openMonthlyPayment = (prmMonth: ISelectedMonth) => {
 		setSelectedMonth(prmMonth);
 		setModifyingMonthlyPayment(true);
 	};
 
 	let studentsTable = loadingStudents ? (
-		<Spinner></Spinner>
+		<Spinner />
 	) : (
 		<StudentsTable
-			openMonthlyPayment={openMonthlyPament}
+			openMonthlyPayment={openMonthlyPayment}
 			changePendienteState={(student: IStudent, PendienteKey: string) =>
 				dispatch(ChangeCheckBoxPendienteThunk(student, PendienteKey))
 			}

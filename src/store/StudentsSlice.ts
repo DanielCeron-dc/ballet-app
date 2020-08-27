@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import IStudent, { IPendiente } from "../interfaces/student";
+import IStudent, { IPendiente, IMensualidad } from "../interfaces/student";
+import IMonthPaidInfo from "../interfaces/MonthPaidInfo";
 import IGroup from "../interfaces/Group";
 
 const initialState: IStudent[] = [];
@@ -56,6 +57,20 @@ export const ChangeCheckBoxPendienteThunk = (student: IStudent, PendienteKey: st
 	}
 };
 
+export const editMonthlyPaymentInfo = (Monthkey: string, Month: IMonthPaidInfo, studentKey: string) => async (
+	dispatch: any
+) => {
+	try {
+		await axios.put(
+			"https://ballet-react-app.firebaseio.com/students/" + studentKey + "/mensualidad/" + Monthkey + ".json",
+			Month
+		);
+		dispatch(StudentsSlice.actions.editMonthlyPaymentInformation({ Monthkey, studentKey, Month }));
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 const StudentsSlice = createSlice({
 	name: "students",
 	initialState,
@@ -72,6 +87,15 @@ const StudentsSlice = createSlice({
 				studentToModify.pendiente[payload.key as keyof IPendiente] = !studentToModify?.pendiente[
 					payload.key as keyof IPendiente
 				];
+			}
+		},
+		editMonthlyPaymentInformation: (
+			state,
+			{ payload }: PayloadAction<{ Monthkey: String; studentKey: string; Month: IMonthPaidInfo }>
+		) => {
+			let studentToModify = state.find((student) => student.id === payload.studentKey);
+			if (studentToModify) {
+				studentToModify.mensualidad[payload.Monthkey as keyof IMensualidad] = payload.Month;
 			}
 		},
 	},

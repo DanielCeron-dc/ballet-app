@@ -77,6 +77,7 @@ const Input: React.FC<Props> = (props) => {
 		case "textarea":
 			InputElement = (
 				<textarea
+					rows={5}
 					className={classesArray.join(" ")}
 					placeholder={props.inputConfig.placeholer}
 					value={props.value}

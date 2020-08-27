@@ -4,7 +4,7 @@ import Form from "../../../Components/Forms/Form";
 import useForm from "../../../Components/Forms/useForm";
 
 import Group from "../../../interfaces/Group";
-import IStudent from "../../../interfaces/student";
+import IStudent, { mensualidadInitialState } from "../../../interfaces/student";
 import { useDispatch } from "react-redux";
 import { postStudentThunk } from "../../../store/StudentsSlice";
 
@@ -44,6 +44,7 @@ const AddStudentForm: React.FC<Props> = (props) => {
 				whatsapp: false,
 				contrato: false,
 			},
+			mensualidad: mensualidadInitialState,
 		};
 		dispatch(postStudentThunk(student));
 		clearStudentForm();

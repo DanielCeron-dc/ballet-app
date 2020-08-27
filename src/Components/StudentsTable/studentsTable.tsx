@@ -15,7 +15,7 @@ import BuildIcon from "@material-ui/icons/Build";
 import QuestionAnswerIcon from "@material-ui/icons/QuestionAnswer";
 
 import Group from "../../interfaces/Group";
-import IStudent from "../../interfaces/student";
+import IStudent, { IMensualidad } from "../../interfaces/student";
 import ISelectedMonth from "../../interfaces/selectedMonth";
 
 interface Props {
@@ -44,6 +44,15 @@ const StudentsTable: React.FC<Props> = (props) => {
 		{ width: 6, text: "Nacimiento" },
 		{ width: 6, text: "Mensualidad" },
 	];
+
+	function monthsHoverText(month: string, student: IStudent): string | undefined {
+		let Month = student.mensualidad[month as keyof IMensualidad];
+		if (Month.complete) {
+			return month + ": " + Month.paid + "              Descripción: " + Month.description;
+		} else {
+			return undefined;
+		}
+	}
 
 	let dataRows: InterfaceRow[] = students.map((student, index) => {
 		return {
@@ -139,11 +148,12 @@ const StudentsTable: React.FC<Props> = (props) => {
 								studentName: student.name,
 								Month: "febrero",
 								idStudent: student.id ? student.id : "it should not happen",
+								student: student,
 							})
 						}
-						hoverText='febrero'
-						buttonHoverText='editar'
+						hoverText={monthsHoverText("febrero", student)}
 						hoverColor={color[2]}
+						selected={student.mensualidad.febrero.complete}
 						selectedColor={color[0]}>
 						<h2 style={{ display: "inline" }}>F</h2>
 					</CheckBox>
@@ -153,10 +163,11 @@ const StudentsTable: React.FC<Props> = (props) => {
 								studentName: student.name,
 								Month: "marzo",
 								idStudent: student.id ? student.id : "it should not happen",
+								student: student,
 							})
 						}
-						hoverText='marzo'
-						buttonHoverText='editar'
+						selected={student.mensualidad.marzo.complete}
+						hoverText={monthsHoverText("marzo", student)}
 						hoverColor={color[2]}
 						selectedColor={color[0]}>
 						<h2 style={{ display: "inline" }}>M</h2>
@@ -167,10 +178,11 @@ const StudentsTable: React.FC<Props> = (props) => {
 								studentName: student.name,
 								Month: "abril",
 								idStudent: student.id ? student.id : "it should not happen",
+								student: student,
 							})
 						}
-						hoverText='abril'
-						buttonHoverText='editar'
+						selected={student.mensualidad.abril.complete}
+						hoverText={monthsHoverText("abril", student)}
 						hoverColor={color[2]}
 						selectedColor={color[0]}>
 						<h2 style={{ display: "inline" }}>A</h2>
@@ -181,10 +193,11 @@ const StudentsTable: React.FC<Props> = (props) => {
 								studentName: student.name,
 								Month: "mayo",
 								idStudent: student.id ? student.id : "it should not happen",
+								student,
 							})
 						}
-						hoverText='mayo'
-						buttonHoverText='editar'
+						selected={student.mensualidad.mayo.complete}
+						hoverText={monthsHoverText("mayo", student)}
 						hoverColor={color[2]}
 						selectedColor={color[0]}>
 						<h2 style={{ display: "inline" }}>M</h2>
@@ -195,10 +208,11 @@ const StudentsTable: React.FC<Props> = (props) => {
 								studentName: student.name,
 								Month: "junio",
 								idStudent: student.id ? student.id : "it should not happen",
+								student,
 							})
 						}
-						hoverText='junio'
-						buttonHoverText='editar'
+						selected={student.mensualidad.junio.complete}
+						hoverText={monthsHoverText("junio", student)}
 						hoverColor={color[2]}
 						selectedColor={color[0]}>
 						<h2 style={{ display: "inline" }}>J</h2>
@@ -209,10 +223,11 @@ const StudentsTable: React.FC<Props> = (props) => {
 								studentName: student.name,
 								Month: "julio",
 								idStudent: student.id ? student.id : "it should not happen",
+								student,
 							})
 						}
-						hoverText='julio'
-						buttonHoverText='editar'
+						selected={student.mensualidad.julio.complete}
+						hoverText={monthsHoverText("julio", student)}
 						hoverColor={color[2]}
 						selectedColor={color[0]}>
 						<h2 style={{ display: "inline" }}>J</h2>
@@ -223,10 +238,11 @@ const StudentsTable: React.FC<Props> = (props) => {
 								studentName: student.name,
 								Month: "agosto",
 								idStudent: student.id ? student.id : "it should not happen",
+								student,
 							})
 						}
-						hoverText='agosto'
-						buttonHoverText='editar'
+						selected={student.mensualidad.agosto.complete}
+						hoverText={monthsHoverText("agosto", student)}
 						hoverColor={color[2]}
 						selectedColor={color[0]}>
 						<h2 style={{ display: "inline" }}>A</h2>
@@ -237,10 +253,11 @@ const StudentsTable: React.FC<Props> = (props) => {
 								studentName: student.name,
 								Month: "septiembre",
 								idStudent: student.id ? student.id : "it should not happen",
+								student,
 							})
 						}
-						hoverText='septiembre'
-						buttonHoverText='editar'
+						selected={student.mensualidad.septiembre.complete}
+						hoverText={monthsHoverText("septiembre", student)}
 						hoverColor={color[2]}
 						selectedColor={color[0]}>
 						<h2 style={{ display: "inline" }}>S</h2>
@@ -251,10 +268,11 @@ const StudentsTable: React.FC<Props> = (props) => {
 								studentName: student.name,
 								Month: "octubre",
 								idStudent: student.id ? student.id : "it should not happen",
+								student,
 							})
 						}
-						hoverText='octubre'
-						buttonHoverText='editar'
+						selected={student.mensualidad.octubre.complete}
+						hoverText={monthsHoverText("octubre", student)}
 						hoverColor={color[2]}
 						selectedColor={color[0]}>
 						<h2 style={{ display: "inline" }}>O</h2>
@@ -265,10 +283,11 @@ const StudentsTable: React.FC<Props> = (props) => {
 								studentName: student.name,
 								Month: "noviembre",
 								idStudent: student.id ? student.id : "it should not happen",
+								student,
 							})
 						}
-						hoverText='noviembre'
-						buttonHoverText='editar'
+						selected={student.mensualidad.noviembre.complete}
+						hoverText={monthsHoverText("noviembre", student)}
 						hoverColor={color[2]}
 						selectedColor={color[0]}>
 						<h2 style={{ display: "inline" }}>N</h2>

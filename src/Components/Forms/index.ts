@@ -172,7 +172,7 @@ export const ModifyMonthlyPayment = {
 		elementType: "input",
 		elementConfig: {
 			type: "number",
-			placeholer: "nombre",
+			placeholer: "total pagado",
 		},
 		value: "",
 		validation: {
@@ -182,18 +182,16 @@ export const ModifyMonthlyPayment = {
 	} as formInterface,
 
 	description: {
-		elementType: "input",
+		elementType: "textarea",
 		elementConfig: {
-			type: "number",
-			placeholer: "descripcion",
+			type: "text",
+			placeholer: "descripción",
 		},
 		value: "",
 		validation: {
 			required: true,
 		},
-		style: {
-			height: "100px",
-		},
+		style: {},
 		valid: false,
 	} as formInterface,
 };
