@@ -14,6 +14,7 @@ export default interface Student {
 	id?: string; //* it must be optional, beacuse when starts the id can't be assigned, just can be assigned when it gets the answer from firebase
 	pendiente: IPendiente;
 	mensualidad: IMensualidad;
+	description: string;
 }
 
 export interface IPendiente {

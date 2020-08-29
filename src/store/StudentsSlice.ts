@@ -6,6 +6,10 @@ import IGroup from "../interfaces/Group";
 
 const initialState: IStudent[] = [];
 
+
+
+
+
 export const postStudentThunk = (student: IStudent) => async (dispatch: any) => {
 	try {
 		let response = await axios.post("https://ballet-react-app.firebaseio.com/students.json", student);
@@ -70,6 +74,17 @@ export const editMonthlyPaymentInfo = (Monthkey: string, Month: IMonthPaidInfo, 
 		console.log(error);
 	}
 };
+
+
+export const postDescriptionThunk = (student: IStudent, newDesctription: string) => async (dispatch: any) => {
+	try {
+		let studentID = student.id; 
+		await axios.put("https://ballet-react-app.firebaseio.com/students/" + studentID + "/description.json",
+		newDesctription)
+	} catch (error) {
+		
+	}
+}
 
 const StudentsSlice = createSlice({
 	name: "students",
