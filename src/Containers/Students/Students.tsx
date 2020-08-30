@@ -30,128 +30,153 @@ import EditStudentForm from "./EditStudentForm/EditStudentForm";
 interface Props {}
 
 const Students: React.FC<Props> = () => {
-	//* Redux store
-	const dispatch = useDispatch();
-	const groupsRedux: Group[] = useTypedSelector((state) => state.Groups);
-	const studentsRedux: IStudent[] = useTypedSelector((state) => state.Students);
-	const loadingStudents: boolean = useTypedSelector((state) => state.LoadingStudents);
-	const loadingGroup: boolean = useTypedSelector((state) => !state.LoadingGroup);
+  //* Redux store
+  const dispatch = useDispatch();
+  const groupsRedux: Group[] = useTypedSelector((state) => state.Groups);
+  const studentsRedux: IStudent[] = useTypedSelector((state) => state.Students);
+  const loadingStudents: boolean = useTypedSelector((state) => state.LoadingStudents);
+  const loadingGroup: boolean = useTypedSelector((state) => !state.LoadingGroup);
 
-	//* Forms :D
-	const [addingGroup, setaddingGroup] = useState<boolean>(false);
-	const [addingStudent, setaddingStudent] = useState<boolean>(false);
-    const [modifyingMonthlyPayment, setModifyingMonthlyPayment] = useState<boolean>(false);
-    const [modifyingDescription, setmodifyingDescription] = useState<boolean>(false);
-    const [editingStudent, seteditingStudent] = useState<boolean>(false);
+  //* Forms :D
+  const [addingGroup, setaddingGroup] = useState<boolean>(false);
+  const [addingStudent, setaddingStudent] = useState<boolean>(false);
+  const [modifyingMonthlyPayment, setModifyingMonthlyPayment] = useState<boolean>(false);
+  const [modifyingDescription, setmodifyingDescription] = useState<boolean>(false);
+  const [editingStudent, seteditingStudent] = useState<boolean>(false);
 
-	const [selectedGroup, setselectedGroup] = useState<string | Group>("there is no selected group");
-    const [selectedMonth, setSelectedMonth] = useState<null | ISelectedMonth>(null);
-    const [selectedStudent, setselectedStudent] = useState<null | IStudent>(null);
-    
-    useEffect(() => {
-		dispatch(FetchGroupsFromFirebase());
-	}, [dispatch]);
+  const [selectedGroup, setselectedGroup] = useState<null | Group>(null);
+  const [selectedMonth, setSelectedMonth] = useState<null | ISelectedMonth>(null);
+  const [selectedStudent, setselectedStudent] = useState<null | IStudent>(null);
 
-	useEffect(() => {
-		if (typeof selectedGroup !== "string") {
-			dispatch(FetchStudentsThunk(selectedGroup));
-		}
-    }, [selectedGroup, dispatch]);
-    
-    useEffect (() => {
-        console.log(" selected student " + selectedStudent?.name);
-    }, [selectedStudent])
+  useEffect(() => {
+    dispatch(FetchGroupsFromFirebase());
+  }, [dispatch]);
 
-	let openMonthlyPayment = (prmMonth: ISelectedMonth) => {
-		setSelectedMonth(prmMonth);
-		setModifyingMonthlyPayment(true);
-    };
-    
-    let openDescriptionForm = (student: IStudent) => {
-         setselectedStudent(student);
-         setmodifyingDescription(true);
+  useEffect(() => {
+    if (selectedGroup) {
+      dispatch(FetchStudentsThunk(selectedGroup));
     }
+  }, [selectedGroup, dispatch]);
 
-    let openEditStudentForm = (student: IStudent) => {
-        setselectedStudent(student);
-        console.log("selecting " + student); 
-        seteditingStudent(true);
-    }
+  useEffect(() => {
+    console.log(" selected student " + selectedStudent?.name);
+  }, [selectedStudent]);
 
-	let studentsTable = loadingStudents ? (
-		<Spinner />
-	) : (
-		<StudentsTable
-            openEditStudentForm = {openEditStudentForm}
-            openDescriptionForm = {openDescriptionForm}
-			openMonthlyPayment={openMonthlyPayment}
-			changePendienteState={(student: IStudent, PendienteKey: string) =>
-				dispatch(ChangeCheckBoxPendienteThunk(student, PendienteKey))
-			}
-			students={studentsRedux}
-			selectedGroup={selectedGroup}
-			tableColor={typeof selectedGroup === "string" ? "rojo" : selectedGroup.color}></StudentsTable>
-	);
+  let openMonthlyPayment = (prmMonth: ISelectedMonth) => {
+    setSelectedMonth(prmMonth);
+    setModifyingMonthlyPayment(true);
+  };
 
-	groupsRedux.length !== 0 && selectedGroup === "there is no selected group" && setselectedGroup(groupsRedux[0]);
-	return (
-		<div style={{ marginTop: "10px" }}>
-            {/* forms  */}
-			<Modal show={addingGroup} closeModalFunc={() => setaddingGroup(false)}>
-				<AddGroupForm closeFormFunction={() => setaddingGroup(false)} />
-			</Modal>
-			<Modal show={addingStudent} closeModalFunc={() => setaddingStudent(false)}>
-				<AddStudentForm closeFormFunction={() => setaddingStudent(false)} selectedGroup={selectedGroup} />
-			</Modal>
-			<Modal show={modifyingMonthlyPayment} closeModalFunc={() => setModifyingMonthlyPayment(false)}>
-				{selectedMonth && (
-					<ModifyMonthlyPayment
-						closeFormFunction={() => setModifyingMonthlyPayment(false)}
-						selectedMonth={selectedMonth}
-					/>
-				)}
-			</Modal>
-            <Modal show = {modifyingDescription} closeModalFunc = {() => setmodifyingDescription(false)}>
-                {selectedStudent && <ModifyDescription key = {selectedStudent.name} studentID = {selectedStudent.id}/>}{/* key to destroy an old component */}
-            </Modal>
-            <Modal show = {editingStudent} closeModalFunc= {() => seteditingStudent(false)}>
-                {selectedStudent && <EditStudentForm key = {selectedStudent.name}
-                 closeFormFunction = {() => seteditingStudent(false)}
-                student = {selectedStudent}
-                  />}
-            </Modal>
- 
-            {/* endForms */}
-			{loadingGroup ? (
-				<React.Fragment>
-					<GroupsNav //*OPTIMIZED
-						groups={groupsRedux}
-						onCLicked={() => setaddingGroup(true)}
-						selectGroup={setselectedGroup}
-						selectedGroupName={typeof selectedGroup === "string" ? selectedGroup : selectedGroup.name}></GroupsNav>
-					{groupsRedux.length !== 0 ? (
-						<React.Fragment>
-							{studentsTable}
-							<div style={{ marginTop: 45, textAlign: "right", marginRight: "10%" }}>
-								<IconButton displayHoverElement={false} tooltipColor='red' onClick={() => setaddingStudent(true)}>
-									<PersonAddIcon />
-								</IconButton>
-							</div>
-						</React.Fragment>
-					) : (
-						<h2>
-							no hay grupos
-							<span role='img' aria-label='carita :u'>
-								🤨
-							</span>
-						</h2>
-					)}
-				</React.Fragment>
-			) : (
-				<Spinner></Spinner>
-			)}
-		</div>
-	);
+  let openDescriptionForm = (student: IStudent) => {
+    setselectedStudent(student);
+    setmodifyingDescription(true);
+  };
+
+  let openEditStudentForm = (student: IStudent) => {
+    setselectedStudent(student);
+    console.log("selecting " + student);
+    seteditingStudent(true);
+  };
+
+  let studentsTable = loadingStudents ? (
+    <Spinner />
+  ) : (
+    <StudentsTable
+      openEditStudentForm={openEditStudentForm}
+      openDescriptionForm={openDescriptionForm}
+      openMonthlyPayment={openMonthlyPayment}
+      changePendienteState={(student: IStudent, PendienteKey: string) =>
+        dispatch(ChangeCheckBoxPendienteThunk(student, PendienteKey))
+      }
+      students={studentsRedux}
+      selectedGroup={selectedGroup}
+      tableColor={selectedGroup === null ? "rojo" : selectedGroup.color}
+    ></StudentsTable>
+  );
+
+  groupsRedux.length !== 0 && !selectedGroup && setselectedGroup(groupsRedux[0]);
+  return (
+    <div style={{ marginTop: "10px" }}>
+      {/* forms  */}
+      <Modal show={addingGroup} closeModalFunc={() => setaddingGroup(false)}>
+        <AddGroupForm closeFormFunction={() => setaddingGroup(false)} />
+      </Modal>
+      <Modal show={addingStudent} closeModalFunc={() => setaddingStudent(false)}>
+        <AddStudentForm
+          closeFormFunction={() => setaddingStudent(false)}
+          selectedGroup={selectedGroup}
+        />
+      </Modal>
+      <Modal
+        show={modifyingMonthlyPayment}
+        closeModalFunc={() => setModifyingMonthlyPayment(false)}
+      >
+        {selectedMonth && (
+          <ModifyMonthlyPayment
+            closeFormFunction={() => setModifyingMonthlyPayment(false)}
+            selectedMonth={selectedMonth}
+          />
+        )}
+      </Modal>
+      <Modal show={modifyingDescription} closeModalFunc={() => setmodifyingDescription(false)}>
+        {selectedStudent && (
+          <ModifyDescription
+            key={selectedStudent.name}
+            studentID={selectedStudent.id}
+            description={selectedStudent.description.value}
+            closeFormFunc={() => setmodifyingDescription(false)}
+          />
+        )}
+        {/* key to destroy an old component */}
+      </Modal>
+      <Modal show={editingStudent} closeModalFunc={() => seteditingStudent(false)}>
+        {selectedStudent && (
+          <EditStudentForm
+            selectedGroupName={selectedGroup ? selectedGroup.name : "this should not happen"}
+            key={selectedStudent.name}
+            Groups={groupsRedux}
+            closeFormFunction={() => seteditingStudent(false)}
+            student={selectedStudent}
+          />
+        )}
+      </Modal>
+
+      {/* endForms */}
+      {loadingGroup ? (
+        <React.Fragment>
+          <GroupsNav //*OPTIMIZED
+            groups={groupsRedux}
+            onCLicked={() => setaddingGroup(true)}
+            selectGroup={setselectedGroup}
+            selectedGroupName={selectedGroup ? selectedGroup.name : "this should not happen"}
+          ></GroupsNav>
+          {groupsRedux.length !== 0 ? (
+            <React.Fragment>
+              {studentsTable}
+              <div style={{ marginTop: 45, textAlign: "right", marginRight: "10%" }}>
+                <IconButton
+                  displayHoverElement={false}
+                  tooltipColor="red"
+                  onClick={() => setaddingStudent(true)}
+                >
+                  <PersonAddIcon />
+                </IconButton>
+              </div>
+            </React.Fragment>
+          ) : (
+            <h2>
+              no hay grupos
+              <span role="img" aria-label="carita :u">
+                🤨
+              </span>
+            </h2>
+          )}
+        </React.Fragment>
+      ) : (
+        <Spinner></Spinner>
+      )}
+    </div>
+  );
 };
 
 export default React.memo(Students);

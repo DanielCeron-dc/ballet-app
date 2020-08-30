@@ -8,7 +8,8 @@ interface Props {
 	form: { [key: string]: formInterface };
 	button?: string;
 	updateValues: (key: string, value: string, valid: boolean) => void;
-	submit: () => void;
+    submit: () => void;
+    children?: React.ReactNode;
 }
 
 const Form: React.FC<Props> = (props) => {
@@ -68,7 +69,9 @@ const Form: React.FC<Props> = (props) => {
 					<Button disable={!valid} color='#6e6edf' onCLick={props.submit}>
 						{props.button}
 					</Button>
+                    
 				)}
+                {props.children}
 			</div>
 		</React.Fragment>
 	);
