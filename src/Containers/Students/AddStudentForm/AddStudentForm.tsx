@@ -45,7 +45,7 @@ const AddStudentForm: React.FC<Props> = (props) => {
 				contrato: false,
 			},
 			mensualidad: mensualidadInitialState,
-			description: "",
+			description: {value: ""},
 		};
 		dispatch(postStudentThunk(student));
 		clearStudentForm();

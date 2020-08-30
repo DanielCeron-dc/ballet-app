@@ -76,15 +76,28 @@ export const editMonthlyPaymentInfo = (Monthkey: string, Month: IMonthPaidInfo, 
 };
 
 
-export const postDescriptionThunk = (student: IStudent, newDesctription: string) => async (dispatch: any) => {
+
+
+export const postDescriptionThunk = (studentID: string, newDescription: string) => async (dispatch: any) => {
 	try {
-		let studentID = student.id; 
-		await axios.put("https://ballet-react-app.firebaseio.com/students/" + studentID + "/description.json",
-		newDesctription)
+        await axios.put("https://ballet-react-app.firebaseio.com/students/" + studentID + "/description.json",{value: newDescription});
+        dispatch(StudentsSlice.actions.postDescription({studentID: studentID, newDescription}));
 	} catch (error) {
-		
+		console.log(error);
 	}
 }
+
+export const editStudent = (studentID: string, student: IStudent) => async (dispatch: any) => {
+    delete student.id;
+    try {
+        await axios.put("https://ballet-react-app.firebaseio.com/students/" + studentID +".json", student);
+        dispatch(StudentsSlice.actions.EditStudent({studentID, student})); 
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
 const StudentsSlice = createSlice({
 	name: "students",
@@ -103,7 +116,25 @@ const StudentsSlice = createSlice({
 					payload.key as keyof IPendiente
 				];
 			}
-		},
+        },
+        EditStudent: (state, {payload}: PayloadAction<{studentID: string ,student: IStudent}>) => {
+            let stateCopy = state; 
+            payload.student.id = payload.studentID;
+            let studentToModify = state.findIndex((student) => student.id === payload.studentID);
+            console.log(studentToModify);
+            if (studentToModify !== -1){
+                stateCopy[studentToModify] = payload.student;
+                console.log(studentToModify);
+            }
+            return stateCopy; 
+     
+        },
+        postDescription: (state, {payload}: PayloadAction<{studentID: string, newDescription: string}>) => {
+            let studentToModify = state.find((student) => student.id === payload.studentID);
+            if (studentToModify){
+                studentToModify.description.value = payload.newDescription;
+            }
+        },
 		editMonthlyPaymentInformation: (
 			state,
 			{ payload }: PayloadAction<{ Monthkey: String; studentKey: string; Month: IMonthPaidInfo }>

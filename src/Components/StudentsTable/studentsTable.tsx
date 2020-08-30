@@ -23,7 +23,9 @@ interface Props {
 	students: IStudent[];
 	selectedGroup: string | Group;
 	changePendienteState: (student: IStudent, PendienteKey: string) => void;
-	openMonthlyPayment: (student: ISelectedMonth) => void;
+    openMonthlyPayment: (student: ISelectedMonth) => void;
+    openDescriptionForm: (student: IStudent) => void;
+    openEditStudentForm: (student: IStudent) => void;
 }
 
 const StudentsTable: React.FC<Props> = (props) => {
@@ -59,21 +61,23 @@ const StudentsTable: React.FC<Props> = (props) => {
 			text: "column",
 			data: [
 				<React.Fragment>
-					<IconButton
+					<IconButton /* config button */
 						displayHoverElement={false}
 						buttonColor='rgba(80, 82, 88, 0.401)'
 						buttonColorHover='rgb(80, 82, 88)'
-						tooltipColor={color[0]}>
+						tooltipColor={color[0]}
+                        onClick = {() => props.openEditStudentForm(student)}>
+                        
 						<BuildIcon fontSize='small' />
 					</IconButton>
-					<IconButton
-						displayHoverElement={true}
-						buttonHoverELement='+'
-						hoverText='si'
+					<IconButton /* description button */
+						displayHoverElement={false}
+                        hoverText={student.description.value}
+                        onClick= {() => props.openDescriptionForm(student)}
 						tooltipColor={color[0]}
 						buttonColor={color[0]}
 						tooltipButtonColor={color[0]}
-						buttonColorHover={color[0]}>
+						>
 						<QuestionAnswerIcon fontSize='small' />
 					</IconButton>
 				</React.Fragment>,

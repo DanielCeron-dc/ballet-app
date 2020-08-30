@@ -32,7 +32,7 @@ const IconButton: React.FC<Props> = (props) => {
 			onMouseEnter={() => sethover(true)}
 			onMouseLeave={() => sethover(false)}>
 			<button
-				onClick={() => props.onClick()}
+				onClick={props.onClick}
 				style={{
 					backgroundColor: hover ? buttonColorHover : buttonColor,
 					borderRadius: "30%",

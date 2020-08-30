@@ -23,26 +23,32 @@ import ISelectedMonth from "../../interfaces/selectedMonth";
 import AddGroupForm from "./AddGroupForm/AddGroupForm";
 import AddStudentForm from "./AddStudentForm/AddStudentForm";
 import ModifyMonthlyPayment from "./ModifyMonthlyPayment/ModifyMonthlyPayment";
+import ModifyDescription from "./ModifyStudentDescriptionForm/ModifyStudentDescriptionForm";
+import editStudentForm from "./EditStudentForm/EditStudentForm";
+import EditStudentForm from "./EditStudentForm/EditStudentForm";
 
 interface Props {}
 
 const Students: React.FC<Props> = () => {
-	//* Redux things
+	//* Redux store
 	const dispatch = useDispatch();
 	const groupsRedux: Group[] = useTypedSelector((state) => state.Groups);
 	const studentsRedux: IStudent[] = useTypedSelector((state) => state.Students);
 	const loadingStudents: boolean = useTypedSelector((state) => state.LoadingStudents);
 	const loadingGroup: boolean = useTypedSelector((state) => !state.LoadingGroup);
 
-	//* Form things :D
+	//* Forms :D
 	const [addingGroup, setaddingGroup] = useState<boolean>(false);
 	const [addingStudent, setaddingStudent] = useState<boolean>(false);
-	const [modifyingMonthlyPayment, setModifyingMonthlyPayment] = useState<boolean>(false);
+    const [modifyingMonthlyPayment, setModifyingMonthlyPayment] = useState<boolean>(false);
+    const [modifyingDescription, setmodifyingDescription] = useState<boolean>(false);
+    const [editingStudent, seteditingStudent] = useState<boolean>(false);
 
 	const [selectedGroup, setselectedGroup] = useState<string | Group>("there is no selected group");
-	const [selectedMonth, setSelectedMonth] = useState<null | ISelectedMonth>(null);
-
-	useEffect(() => {
+    const [selectedMonth, setSelectedMonth] = useState<null | ISelectedMonth>(null);
+    const [selectedStudent, setselectedStudent] = useState<null | IStudent>(null);
+    
+    useEffect(() => {
 		dispatch(FetchGroupsFromFirebase());
 	}, [dispatch]);
 
@@ -50,17 +56,34 @@ const Students: React.FC<Props> = () => {
 		if (typeof selectedGroup !== "string") {
 			dispatch(FetchStudentsThunk(selectedGroup));
 		}
-	}, [selectedGroup, dispatch]);
+    }, [selectedGroup, dispatch]);
+    
+    useEffect (() => {
+        console.log(" selected student " + selectedStudent?.name);
+    }, [selectedStudent])
 
 	let openMonthlyPayment = (prmMonth: ISelectedMonth) => {
 		setSelectedMonth(prmMonth);
 		setModifyingMonthlyPayment(true);
-	};
+    };
+    
+    let openDescriptionForm = (student: IStudent) => {
+         setselectedStudent(student);
+         setmodifyingDescription(true);
+    }
+
+    let openEditStudentForm = (student: IStudent) => {
+        setselectedStudent(student);
+        console.log("selecting " + student); 
+        seteditingStudent(true);
+    }
 
 	let studentsTable = loadingStudents ? (
 		<Spinner />
 	) : (
 		<StudentsTable
+            openEditStudentForm = {openEditStudentForm}
+            openDescriptionForm = {openDescriptionForm}
 			openMonthlyPayment={openMonthlyPayment}
 			changePendienteState={(student: IStudent, PendienteKey: string) =>
 				dispatch(ChangeCheckBoxPendienteThunk(student, PendienteKey))
@@ -73,6 +96,7 @@ const Students: React.FC<Props> = () => {
 	groupsRedux.length !== 0 && selectedGroup === "there is no selected group" && setselectedGroup(groupsRedux[0]);
 	return (
 		<div style={{ marginTop: "10px" }}>
+            {/* forms  */}
 			<Modal show={addingGroup} closeModalFunc={() => setaddingGroup(false)}>
 				<AddGroupForm closeFormFunction={() => setaddingGroup(false)} />
 			</Modal>
@@ -87,6 +111,17 @@ const Students: React.FC<Props> = () => {
 					/>
 				)}
 			</Modal>
+            <Modal show = {modifyingDescription} closeModalFunc = {() => setmodifyingDescription(false)}>
+                {selectedStudent && <ModifyDescription key = {selectedStudent.name} studentID = {selectedStudent.id}/>}{/* key to destroy an old component */}
+            </Modal>
+            <Modal show = {editingStudent} closeModalFunc= {() => seteditingStudent(false)}>
+                {selectedStudent && <EditStudentForm key = {selectedStudent.name}
+                 closeFormFunction = {() => seteditingStudent(false)}
+                student = {selectedStudent}
+                  />}
+            </Modal>
+ 
+            {/* endForms */}
 			{loadingGroup ? (
 				<React.Fragment>
 					<GroupsNav //*OPTIMIZED

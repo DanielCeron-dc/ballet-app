@@ -195,3 +195,21 @@ export const ModifyMonthlyPayment = {
 		valid: false,
 	} as formInterface,
 };
+
+export const ModifyDescription = {
+    description: {
+		elementType: "textarea",
+		elementConfig: {
+			type: "text",
+			placeholer: "descripción",
+		},
+		value: "",
+		validation: {
+			required: true,
+		},
+		style: {},
+		valid: false,
+	} as formInterface,
+}
+
+
