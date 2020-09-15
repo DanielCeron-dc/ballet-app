@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { firestore } from "../../firebase";
+import { useDispatch } from "react-redux";
+import { Fetchstudents } from "../../store/StudentsSlice";
+
 import Table, { Column as InterfaceColumn, Row as InterfaceRow } from "../UI/Table/Table";
 import CheckBox from "../UI/CheckBox/CheckBox";
 import colors, { Icolors } from "../../tools/colors";
@@ -30,8 +34,34 @@ interface Props {
 
 const StudentsTable: React.FC<Props> = (props) => {
   console.log("RENDERING STUDENTS TABLE" + props.students);
-
+  const dispatch = useDispatch();
   const { students } = props;
+
+  useEffect(() => {
+    const unsubscribe = firestore.collection("students").onSnapshot((snapshot) => {
+      const studentsUpdate: IStudent[] = snapshot.docs.map((student) => ({
+        name: student.get("name"),
+        email: student.get("email"),
+        born: student.get("born"),
+        smartphone: student.get("smartphone"),
+        fatherName: student.get("fatherName"),
+        fatherPhone: student.get("fatherPhone"),
+        motherName: student.get("motherName"),
+        motherPhone: student.get("motherPhone"),
+        admissionDate: student.get("admissionDate"),
+        group: student.get("group"),
+        id: student.id,
+        pendiente: student.get("pendiente"),
+        mensualidad: student.get("mensualidad"),
+        description: student.get("description"),
+      }));
+
+      dispatch(Fetchstudents({ students: studentsUpdate }));
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   let color = colors[props.tableColor as keyof Icolors];
 

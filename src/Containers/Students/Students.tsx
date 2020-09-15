@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 
+//* Firebase
+import { firestore } from "../../firebase";
+
 //* redux
 import { FetchGroupsFromFirebase } from "../../store/Group.slice";
 import { useTypedSelector } from "../../store";
@@ -48,8 +51,16 @@ const Students: React.FC<Props> = () => {
   const [selectedMonth, setSelectedMonth] = useState<null | ISelectedMonth>(null);
   const [selectedStudent, setselectedStudent] = useState<null | IStudent>(null);
 
+  const getDataFromFirebase = async () => {
+    const snapshot = await firestore.collection("students").get();
+    snapshot.forEach((doc) => {
+      console.log(doc.id);
+    });
+  };
+
   useEffect(() => {
     dispatch(FetchGroupsFromFirebase());
+    getDataFromFirebase();
   }, [dispatch]);
 
   useEffect(() => {

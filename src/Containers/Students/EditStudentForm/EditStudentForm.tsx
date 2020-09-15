@@ -188,15 +188,7 @@ const EditStudentForm: React.FC<Props> = (props) => {
       motherPhone: form["madreNumero"].value,
       admissionDate: form["dateAdmission"].value,
       group: form["groups"].value,
-      pendiente: {
-        matricula: false,
-        foto: false,
-        registro: false,
-        medico: false,
-        salud: false,
-        whatsapp: false,
-        contrato: false,
-      },
+      pendiente: props.student.pendiente,
       mensualidad: props.student.mensualidad,
       description: props.student.description,
     };

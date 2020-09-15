@@ -3,18 +3,16 @@ import axios from "axios";
 import IStudent, { IPendiente, IMensualidad } from "../interfaces/student";
 import IMonthPaidInfo from "../interfaces/MonthPaidInfo";
 import IGroup from "../interfaces/Group";
+import { firestore } from "../firebase";
 
 const initialState: IStudent[] = [];
 
 export const postStudentThunk = (student: IStudent) => async (dispatch: any) => {
   try {
-    let response = await axios.post(
-      "https://ballet-react-app.firebaseio.com/students.json",
-      student
-    );
-    student.id = response.data.name;
+    const newStudentRef = await firestore.collection("students").add(student);
+
+    student.id = newStudentRef.id;
     console.log(student);
-    dispatch(StudentsSlice.actions.Create(student));
   } catch (error) {
     console.log(error);
   }
@@ -22,18 +20,30 @@ export const postStudentThunk = (student: IStudent) => async (dispatch: any) => 
 
 export const FetchStudentsThunk = (prmGroup: IGroup) => async (dispatch: any) => {
   dispatch(loadingStudents.actions.switchLoading({ newState: true }));
+  let fetchedStudents: IStudent[] = [];
   try {
-    let queryOrderBy = '?orderBy="group"&equalTo="' + prmGroup.name + '"';
-    let fetchedStudents: IStudent[] = [];
-    let response = await axios.get(
-      "https://ballet-react-app.firebaseio.com/students.json" + queryOrderBy
-    );
-    for (let key in response.data) {
+    const students = await firestore
+      .collection("students")
+      .where("group", "==", prmGroup.name)
+      .get();
+    students.forEach((student) => {
       fetchedStudents.push({
-        ...response.data[key],
-        id: key,
+        name: student.get("name"),
+        email: student.get("email"),
+        born: student.get("born"),
+        smartphone: student.get("smartphone"),
+        fatherName: student.get("fatherName"),
+        fatherPhone: student.get("fatherPhone"),
+        motherName: student.get("motherName"),
+        motherPhone: student.get("motherPhone"),
+        admissionDate: student.get("admissionDate"),
+        group: student.get("group"),
+        id: student.id,
+        pendiente: student.get("pendiente"),
+        mensualidad: student.get("mensualidad"),
+        description: student.get("description"),
       });
-    }
+    });
 
     dispatch(StudentsSlice.actions.Fetchstudents({ students: fetchedStudents }));
     dispatch(loadingStudents.actions.switchLoading({ newState: false }));
@@ -53,13 +63,10 @@ export const ChangeCheckBoxPendienteThunk = (student: IStudent, PendienteKey: st
         [PendienteKey as keyof IPendiente]: !newPendienteState[PendienteKey as keyof IPendiente],
       };
 
-      await axios.put(
-        "https://ballet-react-app.firebaseio.com/students/" + student.id + "/pendiente.json",
-        newPendienteState
-      );
-      dispatch(
-        StudentsSlice.actions.EditPendiente({ key: PendienteKey, studentName: student.name })
-      );
+      await firestore
+        .collection("students")
+        .doc(student.id)
+        .update({ pendiente: newPendienteState });
     }
   } catch (error) {
     console.log(error);
@@ -72,15 +79,10 @@ export const editMonthlyPaymentInfo = (
   studentKey: string
 ) => async (dispatch: any) => {
   try {
-    await axios.put(
-      "https://ballet-react-app.firebaseio.com/students/" +
-        studentKey +
-        "/mensualidad/" +
-        Monthkey +
-        ".json",
-      Month
-    );
-    dispatch(StudentsSlice.actions.editMonthlyPaymentInformation({ Monthkey, studentKey, Month }));
+    await firestore
+      .collection("students")
+      .doc(studentKey)
+      .update({ [`mensualidad.${Monthkey}`]: Month });
   } catch (error) {
     console.log(error);
   }
@@ -90,11 +92,10 @@ export const postDescriptionThunk = (studentID: string, newDescription: string) 
   dispatch: any
 ) => {
   try {
-    await axios.put(
-      "https://ballet-react-app.firebaseio.com/students/" + studentID + "/description.json",
-      { value: newDescription }
-    );
-    dispatch(StudentsSlice.actions.postDescription({ studentID: studentID, newDescription }));
+    await firestore
+      .collection("students")
+      .doc(studentID)
+      .update({ "description.value": newDescription });
   } catch (error) {
     console.log(error);
   }
@@ -103,11 +104,7 @@ export const postDescriptionThunk = (studentID: string, newDescription: string) 
 export const editStudent = (studentID: string, student: IStudent) => async (dispatch: any) => {
   delete student.id;
   try {
-    await axios.put(
-      "https://ballet-react-app.firebaseio.com/students/" + studentID + ".json",
-      student
-    );
-    dispatch(StudentsSlice.actions.EditStudent({ studentID, student }));
+    await firestore.collection("students").doc(studentID).set(student);
   } catch (error) {
     console.log(error);
   }
@@ -115,8 +112,7 @@ export const editStudent = (studentID: string, student: IStudent) => async (disp
 
 export const deleteStudentThunk = (studentID: string) => async (dispatch: any) => {
   try {
-    await axios.delete("https://ballet-react-app.firebaseio.com/students/" + studentID + ".json");
-    dispatch(StudentsSlice.actions.DeleteSTudent({ studentID }));
+    await firestore.collection("students").doc(studentID).delete();
   } catch (error) {
     console.log(error);
   }
@@ -139,84 +135,6 @@ const StudentsSlice = createSlice({
     ) => {
       return payload.students;
     },
-    EditPendiente: (
-      state,
-      {
-        payload,
-      }: PayloadAction<{
-        key: string;
-        studentName: string;
-      }>
-    ) => {
-      let studentToModify = state.find((student) => student.name === payload.studentName);
-      if (studentToModify && studentToModify.pendiente) {
-        studentToModify.pendiente[payload.key as keyof IPendiente] = !studentToModify?.pendiente[
-          payload.key as keyof IPendiente
-        ];
-      }
-    },
-    EditStudent: (
-      state,
-      {
-        payload,
-      }: PayloadAction<{
-        studentID: string;
-        student: IStudent;
-      }>
-    ) => {
-      let stateCopy = state;
-      payload.student.id = payload.studentID;
-      let studentToModify = state.findIndex((student) => student.id === payload.studentID);
-      console.log(studentToModify);
-      if (studentToModify !== -1) {
-        if (stateCopy[studentToModify].group !== payload.student.group) {
-          return state.filter((student) => student.id !== payload.studentID); //in the app just exists the students that stay in the actual group so if changes of group it should be delete from the actual state
-        }
-
-        stateCopy[studentToModify] = payload.student;
-        console.log(studentToModify);
-      }
-      return stateCopy;
-    },
-    DeleteSTudent: (
-      state,
-      {
-        payload,
-      }: PayloadAction<{
-        studentID: string;
-      }>
-    ) => {
-      return state.filter((student) => student.id !== payload.studentID);
-    },
-    postDescription: (
-      state,
-      {
-        payload,
-      }: PayloadAction<{
-        studentID: string;
-        newDescription: string;
-      }>
-    ) => {
-      let studentToModify = state.find((student) => student.id === payload.studentID);
-      if (studentToModify) {
-        studentToModify.description.value = payload.newDescription;
-      }
-    },
-    editMonthlyPaymentInformation: (
-      state,
-      {
-        payload,
-      }: PayloadAction<{
-        Monthkey: String;
-        studentKey: string;
-        Month: IMonthPaidInfo;
-      }>
-    ) => {
-      let studentToModify = state.find((student) => student.id === payload.studentKey);
-      if (studentToModify) {
-        studentToModify.mensualidad[payload.Monthkey as keyof IMensualidad] = payload.Month;
-      }
-    },
   },
 });
 
@@ -236,6 +154,8 @@ const loadingStudents = createSlice({
     },
   },
 });
+
+export const { Fetchstudents } = StudentsSlice.actions;
 
 export const studentsReducer = {
   Students: StudentsSlice.reducer,
