@@ -38,26 +38,30 @@ const StudentsTable: React.FC<Props> = (props) => {
   const { students } = props;
 
   useEffect(() => {
-    const unsubscribe = firestore.collection("students").onSnapshot((snapshot) => {
-      const studentsUpdate: IStudent[] = snapshot.docs.map((student) => ({
-        name: student.get("name"),
-        email: student.get("email"),
-        born: student.get("born"),
-        smartphone: student.get("smartphone"),
-        fatherName: student.get("fatherName"),
-        fatherPhone: student.get("fatherPhone"),
-        motherName: student.get("motherName"),
-        motherPhone: student.get("motherPhone"),
-        admissionDate: student.get("admissionDate"),
-        group: student.get("group"),
-        id: student.id,
-        pendiente: student.get("pendiente"),
-        mensualidad: student.get("mensualidad"),
-        description: student.get("description"),
-      }));
+    const groupNameTofilter = props.selectedGroup ? props.selectedGroup.name : "";
+    const unsubscribe = firestore
+      .collection("students")
+      .where("group", "==", groupNameTofilter)
+      .onSnapshot((snapshot) => {
+        const studentsUpdate: IStudent[] = snapshot.docs.map((student) => ({
+          name: student.get("name"),
+          email: student.get("email"),
+          born: student.get("born"),
+          smartphone: student.get("smartphone"),
+          fatherName: student.get("fatherName"),
+          fatherPhone: student.get("fatherPhone"),
+          motherName: student.get("motherName"),
+          motherPhone: student.get("motherPhone"),
+          admissionDate: student.get("admissionDate"),
+          group: student.get("group"),
+          id: student.id,
+          pendiente: student.get("pendiente"),
+          mensualidad: student.get("mensualidad"),
+          description: student.get("description"),
+        }));
 
-      dispatch(Fetchstudents({ students: studentsUpdate }));
-    });
+        dispatch(Fetchstudents({ students: studentsUpdate }));
+      });
     return () => {
       unsubscribe();
     };
