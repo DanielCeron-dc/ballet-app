@@ -1,5 +1,6 @@
 import React from "react";
 import { fade, makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import ReceiptIcon from "@material-ui/icons/Receipt";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
@@ -11,7 +12,6 @@ import Menu from "@material-ui/core/Menu";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import HomeIcon from "@material-ui/icons/Home";
 import MoreIcon from "@material-ui/icons/MoreVert";
@@ -139,9 +139,9 @@ export default function PrimarySearchAppBar() {
       onClose={handleMobileMenuClose}
     >
       <MenuItem>
-        <IconButton aria-label="show 5 new mails" color="inherit">
+        <IconButton onClick={() => history.push("/receipts")} aria-label="receipts" color="inherit">
           <Badge badgeContent={4} color="secondary">
-            <MailIcon />
+            <ReceiptIcon />
           </Badge>
         </IconButton>
         <p>Messages</p>
@@ -190,8 +190,12 @@ export default function PrimarySearchAppBar() {
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 4 new mails" color="inherit">
-              <MailIcon />
+            <IconButton
+              onClick={() => history.push("/receipts")}
+              aria-label="receipts"
+              color="inherit"
+            >
+              <ReceiptIcon />
             </IconButton>
             <IconButton onClick={() => history.push("/home")} aria-label="home" color="inherit">
               <HomeIcon />
