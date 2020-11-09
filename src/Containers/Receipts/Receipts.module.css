@@ -1,0 +1,10 @@
+.Receipts {
+  display: flex;
+  justify-content: center; /*Este*/
+  align-items: center; /*Este*/
+  flex-grow: 1; /*Este*/
+  flex-flow: row wrap; /*Y este otro solo se pueden usar con display: flex*/
+  max-width: 100%;
+
+  min-height: 100vh;
+}

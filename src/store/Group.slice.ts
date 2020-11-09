@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { firestore } from "../firebase";
 import IGroup from "../interfaces/Group";
-import axios from "axios";
 
 //*Thunk
 export const PostGroupThunk = ({

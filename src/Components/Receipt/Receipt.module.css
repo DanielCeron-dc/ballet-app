@@ -1,0 +1,27 @@
+.Receipt {
+  border: 5px solid gray;
+  min-width: 20%;
+  max-width: 25%;
+  margin: 10px;
+  height: max-content;
+}
+
+.Receipt:hover {
+  background-color: red;
+}
+
+.grow {
+  display: table-cell;
+  border: 5px solid gray;
+  min-height: 100%;
+  width: 20%;
+  padding: 0;
+  margin: 10px;
+  -webkit-transition: width 500ms;
+  -moz-transition: width 500ms;
+  transition: width 500ms;
+}
+.grow:hover {
+  width: 26%;
+  background-color: rgba(150, 203, 224, 0.603);
+}

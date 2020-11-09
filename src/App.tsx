@@ -6,9 +6,6 @@ import Spinner from "./Components/UI/Spinner/Spinner";
 
 import "./App.css";
 
-interface Props {
-	name: string;
-}
 
 const Home = React.lazy(() => {
 	return import("./Containers/home/Home");
@@ -26,7 +23,7 @@ const Students = React.lazy(() => {
 	return import("./Containers/Students/Students");
 });
 
-const App: React.FC<Props> = () => {
+const App: React.FC = () => {
 	return (
 		<div className='App'>
 			<PrimarySearchAppBar />
