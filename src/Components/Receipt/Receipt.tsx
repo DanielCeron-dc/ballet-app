@@ -1,20 +1,15 @@
 import React from "react";
 import classes from "./Receipt.module.css";
+import IReceipt from "../../interfaces/Receipt";
 
-interface Props {
-  name: string;
-  date: string;
-  counter: number;
-  payment: number;
-}
-
-const Receipt: React.FC<Props> = (props) => {
+const Receipt: React.FC<IReceipt> = (props) => {
   return (
     <div className={classes.grow}>
       <h2> nombre: {props.name} </h2>
-      <h6> Fecha: {props.date} </h6>
-      <h6> numero: {props.counter} </h6>
-      <h6> pagado: {props.payment}</h6>
+      <h6> Fecha: {props.date.toString()} </h6>
+      <h6> numero: {props.number} </h6>
+      <h6> pagado: {props.cost}</h6>
+      <h6> recibi de: {props.createdBy}</h6>
     </div>
   );
 };

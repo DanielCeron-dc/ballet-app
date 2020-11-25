@@ -3,15 +3,7 @@ import { firestore } from "../firebase";
 import IGroup from "../interfaces/Group";
 
 //*Thunk
-export const PostGroupThunk = ({
-  name,
-  color,
-  id,
-}: {
-  name: string;
-  color: string;
-  id: string;
-}) => async (
+export const PostGroupThunk = ({ name, color, id }: { name: string; color: string; id: string }) => async (
   dispatch: (action: { payload: { name: string; color: string; id: string }; type: string }) => void
 ) => {
   try {
@@ -38,7 +30,7 @@ export const FetchGroupsFromFirebase = () => async (dispatch: any) => {
     dispatch(GroupSlice.actions.FetchGroups({ groups: fetchedGroups }));
     dispatch(loadingGroup.actions.switchLoading({ newState: false }));
   } catch (error) {
-    console.log("hola");
+    throw "Groups Error";
   }
 };
 

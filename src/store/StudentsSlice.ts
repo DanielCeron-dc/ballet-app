@@ -22,10 +22,7 @@ export const FetchStudentsThunk = (prmGroup: IGroup) => async (dispatch: any) =>
   dispatch(loadingStudents.actions.switchLoading({ newState: true }));
   let fetchedStudents: IStudent[] = [];
   try {
-    const students = await firestore
-      .collection("students")
-      .where("group", "==", prmGroup.name)
-      .get();
+    const students = await firestore.collection("students").where("group", "==", prmGroup.name).get();
     students.forEach((student) => {
       fetchedStudents.push({
         name: student.get("name"),
@@ -52,9 +49,7 @@ export const FetchStudentsThunk = (prmGroup: IGroup) => async (dispatch: any) =>
   }
 };
 
-export const ChangeCheckBoxPendienteThunk = (student: IStudent, PendienteKey: string) => async (
-  dispatch: any
-) => {
+export const ChangeCheckBoxPendienteThunk = (student: IStudent, PendienteKey: string) => async (dispatch: any) => {
   try {
     let newPendienteState = student.pendiente;
     if (newPendienteState && student.id) {
@@ -63,21 +58,14 @@ export const ChangeCheckBoxPendienteThunk = (student: IStudent, PendienteKey: st
         [PendienteKey as keyof IPendiente]: !newPendienteState[PendienteKey as keyof IPendiente],
       };
 
-      await firestore
-        .collection("students")
-        .doc(student.id)
-        .update({ pendiente: newPendienteState });
+      await firestore.collection("students").doc(student.id).update({ pendiente: newPendienteState });
     }
   } catch (error) {
     console.log(error);
   }
 };
 
-export const editMonthlyPaymentInfo = (
-  Monthkey: string,
-  Month: IMonthPaidInfo,
-  studentKey: string
-) => async (dispatch: any) => {
+export const editMonthlyPaymentInfo = (Monthkey: string, Month: IMonthPaidInfo, studentKey: string) => async (dispatch: any) => {
   try {
     await firestore
       .collection("students")
@@ -88,14 +76,9 @@ export const editMonthlyPaymentInfo = (
   }
 };
 
-export const postDescriptionThunk = (studentID: string, newDescription: string) => async (
-  dispatch: any
-) => {
+export const postDescriptionThunk = (studentID: string, newDescription: string) => async (dispatch: any) => {
   try {
-    await firestore
-      .collection("students")
-      .doc(studentID)
-      .update({ "description.value": newDescription });
+    await firestore.collection("students").doc(studentID).update({ "description.value": newDescription });
   } catch (error) {
     console.log(error);
   }
@@ -125,14 +108,7 @@ const StudentsSlice = createSlice({
     Create: (state, { payload }: PayloadAction<IStudent>) => {
       state.push(payload);
     },
-    Fetchstudents: (
-      state,
-      {
-        payload,
-      }: PayloadAction<{
-        students: IStudent[];
-      }>
-    ) => {
+    Fetchstudents: (state, { payload }: PayloadAction<{ students: IStudent[] }>) => {
       return payload.students;
     },
   },

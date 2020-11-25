@@ -51,16 +51,9 @@ const Students: React.FC<Props> = () => {
   const [selectedMonth, setSelectedMonth] = useState<null | ISelectedMonth>(null);
   const [selectedStudent, setselectedStudent] = useState<null | IStudent>(null);
 
-  const getDataFromFirebase = async () => {
-    const snapshot = await firestore.collection("students").get();
-    snapshot.forEach((doc) => {
-      console.log(doc.id);
-    });
-  };
 
-  useEffect(() => {
+  useEffect(() => {    
     dispatch(FetchGroupsFromFirebase());
-    getDataFromFirebase();
   }, [dispatch]);
 
   useEffect(() => {
@@ -96,9 +89,7 @@ const Students: React.FC<Props> = () => {
       openEditStudentForm={openEditStudentForm}
       openDescriptionForm={openDescriptionForm}
       openMonthlyPayment={openMonthlyPayment}
-      changePendienteState={(student: IStudent, PendienteKey: string) =>
-        dispatch(ChangeCheckBoxPendienteThunk(student, PendienteKey))
-      }
+      changePendienteState={(student: IStudent, PendienteKey: string) => dispatch(ChangeCheckBoxPendienteThunk(student, PendienteKey))}
       students={studentsRedux}
       selectedGroup={selectedGroup}
       tableColor={selectedGroup === null ? "rojo" : selectedGroup.color}
@@ -113,21 +104,10 @@ const Students: React.FC<Props> = () => {
         <AddGroupForm closeFormFunction={() => setaddingGroup(false)} />
       </Modal>
       <Modal show={addingStudent} closeModalFunc={() => setaddingStudent(false)}>
-        <AddStudentForm
-          closeFormFunction={() => setaddingStudent(false)}
-          selectedGroup={selectedGroup}
-        />
+        <AddStudentForm closeFormFunction={() => setaddingStudent(false)} selectedGroup={selectedGroup} />
       </Modal>
-      <Modal
-        show={modifyingMonthlyPayment}
-        closeModalFunc={() => setModifyingMonthlyPayment(false)}
-      >
-        {selectedMonth && (
-          <ModifyMonthlyPayment
-            closeFormFunction={() => setModifyingMonthlyPayment(false)}
-            selectedMonth={selectedMonth}
-          />
-        )}
+      <Modal show={modifyingMonthlyPayment} closeModalFunc={() => setModifyingMonthlyPayment(false)}>
+        {selectedMonth && <ModifyMonthlyPayment closeFormFunction={() => setModifyingMonthlyPayment(false)} selectedMonth={selectedMonth} />}
       </Modal>
       <Modal show={modifyingDescription} closeModalFunc={() => setmodifyingDescription(false)}>
         {selectedStudent && (
@@ -165,11 +145,7 @@ const Students: React.FC<Props> = () => {
             <React.Fragment>
               {studentsTable}
               <div style={{ marginTop: 45, textAlign: "right", marginRight: "10%" }}>
-                <IconButton
-                  displayHoverElement={false}
-                  tooltipColor="red"
-                  onClick={() => setaddingStudent(true)}
-                >
+                <IconButton displayHoverElement={false} tooltipColor="red" onClick={() => setaddingStudent(true)}>
                   <PersonAddIcon />
                 </IconButton>
               </div>
