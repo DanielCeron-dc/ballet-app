@@ -18,8 +18,11 @@ export const PostGroupThunk = ({ name, color, id }: { name: string; color: strin
 export const FetchGroupsFromFirebase = () => async (dispatch: any) => {
   let fetchedGroups: IGroup[] = [];
   dispatch(loadingGroup.actions.switchLoading({ newState: true }));
+  console.log("AQUI LLEGO");
+  
   try {
     const groups = await firestore.collection("groups").get();
+    console.log(groups);
     groups.forEach((group) => {
       fetchedGroups.push({
         name: group.get("name"),
@@ -30,7 +33,9 @@ export const FetchGroupsFromFirebase = () => async (dispatch: any) => {
     dispatch(GroupSlice.actions.FetchGroups({ groups: fetchedGroups }));
     dispatch(loadingGroup.actions.switchLoading({ newState: false }));
   } catch (error) {
+    console.log(error);
     throw "Groups Error";
+    
   }
 };
 

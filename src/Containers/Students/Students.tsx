@@ -51,19 +51,21 @@ const Students: React.FC<Props> = () => {
   const [selectedMonth, setSelectedMonth] = useState<null | ISelectedMonth>(null);
   const [selectedStudent, setselectedStudent] = useState<null | IStudent>(null);
 
-
-  useEffect(() => {    
+  useEffect(() => {
     dispatch(FetchGroupsFromFirebase());
   }, [dispatch]);
 
   useEffect(() => {
     if (selectedGroup) {
+      console.log(selectedGroup);
       dispatch(FetchStudentsThunk(selectedGroup));
     }
   }, [selectedGroup, dispatch]);
 
   useEffect(() => {
-    console.log(" selected student " + selectedStudent?.name);
+    if (selectedGroup) {
+      console.log(" selected student " + selectedStudent?.name);
+    }
   }, [selectedStudent]);
 
   let openMonthlyPayment = (prmMonth: ISelectedMonth) => {
@@ -89,7 +91,9 @@ const Students: React.FC<Props> = () => {
       openEditStudentForm={openEditStudentForm}
       openDescriptionForm={openDescriptionForm}
       openMonthlyPayment={openMonthlyPayment}
-      changePendienteState={(student: IStudent, PendienteKey: string) => dispatch(ChangeCheckBoxPendienteThunk(student, PendienteKey))}
+      changePendienteState={(student: IStudent, PendienteKey: string) =>
+        dispatch(ChangeCheckBoxPendienteThunk(student, PendienteKey))
+      }
       students={studentsRedux}
       selectedGroup={selectedGroup}
       tableColor={selectedGroup === null ? "rojo" : selectedGroup.color}
@@ -107,7 +111,12 @@ const Students: React.FC<Props> = () => {
         <AddStudentForm closeFormFunction={() => setaddingStudent(false)} selectedGroup={selectedGroup} />
       </Modal>
       <Modal show={modifyingMonthlyPayment} closeModalFunc={() => setModifyingMonthlyPayment(false)}>
-        {selectedMonth && <ModifyMonthlyPayment closeFormFunction={() => setModifyingMonthlyPayment(false)} selectedMonth={selectedMonth} />}
+        {selectedMonth && (
+          <ModifyMonthlyPayment
+            closeFormFunction={() => setModifyingMonthlyPayment(false)}
+            selectedMonth={selectedMonth}
+          />
+        )}
       </Modal>
       <Modal show={modifyingDescription} closeModalFunc={() => setmodifyingDescription(false)}>
         {selectedStudent && (
