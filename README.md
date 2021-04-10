@@ -1,3 +1,4 @@
+![Captura de pantalla 2021-04-09 205456](https://user-images.githubusercontent.com/62627348/114254605-faa0d600-9975-11eb-8057-0e8781b71be7.png)
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
